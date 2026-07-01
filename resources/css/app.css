@@ -1,0 +1,86 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: 'BitcountGridDouble';
+    font-style: normal;
+    font-weight: 100 900;
+    font-display: swap;
+    src: url('/fonts/BitcountGridDouble-Variable.woff2') format('woff2-variations');
+}
+@font-face {
+    font-family: 'BitcountGridDouble';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('/fonts/BitcountGridDouble-Regular.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'BitcountGridDouble';
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url('/fonts/BitcountGridDouble-Bold.woff2') format('woff2');
+}
+
+body {
+    font-family: 'Inter', system-ui, sans-serif;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    html {
+        scroll-behavior: smooth;
+    }
+}
+
+::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: #333;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+    display: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+::selection {
+    background: #333;
+    color: #fff;
+}
+
+img {
+    -webkit-user-drag: none;
+    user-select: none;
+}
+
+.message-bubble-other {
+    background-color: #2A2A2A;
+    border-radius: 2px 12px 12px 12px;
+}
+
+.message-bubble-self {
+    background-color: #222222;
+    color: #fff;
+    border-radius: 12px 12px 2px 12px;
+}
