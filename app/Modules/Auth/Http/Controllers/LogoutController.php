@@ -4,6 +4,7 @@ namespace App\Modules\Auth\Http\Controllers;
 
 use App\Modules\Auth\Services\AuthService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class LogoutController
 {
@@ -11,12 +12,15 @@ class LogoutController
         private readonly AuthService $authService,
     ) {}
 
-    public function destroy(): JsonResponse
+    public function destroy(Request $request): JsonResponse
     {
-        $this->authService->logout();
+        auth()->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
         return response()->json([
             'message' => 'Logged out successfully.',
         ]);
     }
+
 }

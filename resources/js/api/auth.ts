@@ -1,4 +1,5 @@
 import client from './client'
+import axios from 'axios'
 
 export interface User {
   id: string
@@ -41,9 +42,5 @@ export async function getMe(): Promise<User | null> {
 }
 
 export async function logout(): Promise<void> {
-  try {
-    await client.post('/logout')
-  } catch {
-    // ignore
-  }
+  await client.post('/logout')
 }

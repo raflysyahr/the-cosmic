@@ -6,7 +6,7 @@ import NotificationDropdown from '../discuss/NotificationDropdown'
 import Avatar from '../ui/Avatar'
 
 export default function Header() {
-    const { user, loading, logout } = useAuth()
+    const { user, loading } = useAuth()
     const [query, setQuery] = useState('')
     const [menuOpen, setMenuOpen] = useState(false)
 
@@ -19,9 +19,8 @@ export default function Header() {
         }
     }
 
-    const handleLogout = async () => {
-        await logout()
-        router.visit('/', { replace: true })
+    const handleLogout = () => {
+        router.get('/logout')
     }
 
     return (
@@ -145,6 +144,16 @@ export default function Header() {
                                     Sign Out
                                 </button>
                             </div>
+                        )}
+                        {!user && (
+                            <Link
+                                href="/login"
+                                onClick={() => setMenuOpen(false)}
+                                className="flex w-full items-center gap-2 px-3 py-2 text-xs text-[#555] transition-colors hover:bg-[#1A1A1A] hover:text-white"
+                            >
+                                <User className="h-3 w-3" />
+                                Sign In
+                            </Link>
                         )}
                     </div>
                 </div>

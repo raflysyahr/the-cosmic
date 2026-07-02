@@ -4,6 +4,7 @@ const client = axios.create({
   baseURL: '/api',
   timeout: 15000,
   withCredentials: true,
+  withXSRFToken: true,
   headers: { Accept: 'application/json' },
 })
 

@@ -56,6 +56,13 @@ Route::get('/login', function () {
     return Inertia::render('Login');
 })->name('login');
 
+Route::get('/logout', function () {
+    auth()->logout();
+    request()->session()->invalidate();
+    request()->session()->regenerateToken();
+    return redirect('/');
+})->name('logout');
+
 Route::get('/register', function () {
     return Inertia::render('Register');
 });
