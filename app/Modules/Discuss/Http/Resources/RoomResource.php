@@ -3,6 +3,7 @@
 namespace App\Modules\Discuss\Http\Resources;
 
 use App\Modules\Auth\Models\User;
+use App\Modules\Discuss\Models\Member;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -28,7 +29,7 @@ class RoomResource extends JsonResource
             ] : null,
             'settings' => $this->settings,
             'is_active' => $this->is_active,
-            'member_count' => $this->whenCounted('members'),
+            'member_count' => Member::where('room_id', $this->id)->count(),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

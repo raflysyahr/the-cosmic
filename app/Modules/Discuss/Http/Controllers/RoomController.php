@@ -6,6 +6,7 @@ use App\Modules\Discuss\Data\CreateRoomData;
 use App\Modules\Discuss\Http\Requests\CreateRoomRequest;
 use App\Modules\Discuss\Http\Requests\UpdateRoomSettingsRequest;
 use App\Modules\Discuss\Http\Resources\RoomResource;
+use App\Modules\Discuss\Models\Member;
 use App\Modules\Discuss\Models\Message;
 use App\Modules\Discuss\Models\Room;
 use App\Modules\Discuss\Services\RoomService;
@@ -23,7 +24,6 @@ class RoomController
     public function index(Request $request): array
     {
         $rooms = Room::active()
-            ->withCount('members')
             ->orderBy('created_at', 'desc')
             ->paginate(20);
 
@@ -57,7 +57,7 @@ class RoomController
                 'type' => $room->type->value,
                 'context_type' => $room->context_type,
                 'context_id' => $room->context_id,
-                'member_count' => $room->members_count,
+                'member_count' => Member::where('room_id', $room->id)->count(),
                 'last_message' => $lastMessageData,
                 'created_at' => $room->created_at,
             ];
@@ -98,9 +98,7 @@ class RoomController
 
     public function show(string $slug): RoomResource
     {
-        $room = Room::where('slug', $slug)
-            ->withCount('members')
-            ->firstOrFail();
+        $room = Room::where('slug', $slug)->firstOrFail();
 
         $room->cover_url = $this->roomService->freshCover($room);
 
