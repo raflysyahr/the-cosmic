@@ -57,7 +57,7 @@ class MessageController
 
         $message = Message::findOrFail($messageId);
 
-        $updated = $this->messageService->edit($message, $request->input('body'));
+        $updated = $this->messageService->edit($message, $request->input('body'), $request->user()->id);
 
         return response()->json([
             'message' => new MessageResource($updated),

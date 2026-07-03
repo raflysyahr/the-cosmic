@@ -49,8 +49,14 @@ class MessageService implements MessageServiceContract
         return $message;
     }
 
-    public function edit(Message $message, string $newBody): Message
+    public function edit(Message $message, string $newBody, string $byUserId): Message
     {
+        if ((string) $message->user_id !== (string) $byUserId) {
+            throw ValidationException::withMessages([
+                'message' => ['You are not allowed to edit this message.'],
+            ]);
+        }
+
         $message->update([
             'body' => $newBody,
             'is_edited' => true,
@@ -63,6 +69,24 @@ class MessageService implements MessageServiceContract
 
     public function delete(Message $message, string $byUserId): void
     {
+        $isOwner = (string) $message->user_id === (string) $byUserId;
+
+        if (! $isOwner) {
+            $actor = Member::where('room_id', $message->room_id)
+                ->where('user_id', $byUserId)
+                ->first();
+
+            $isModerator = $actor
+                && ! $actor->is_banned
+                && in_array($actor->role->value, ['moderator', 'admin'], true);
+
+            if (! $isModerator) {
+                throw ValidationException::withMessages([
+                    'message' => ['You are not allowed to delete this message.'],
+                ]);
+            }
+        }
+
         $message->update([
             'is_deleted' => true,
             'deleted_by_user_id' => $byUserId,

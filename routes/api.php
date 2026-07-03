@@ -1,28 +1,10 @@
 <?php
 
-use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\BookmarkController;
-use App\Http\Controllers\Api\HistoryController;
 use App\Http\Controllers\Api\V1\SeriesController as V1SeriesController;
 use App\Http\Controllers\Api\V1\GenreController as V1GenreController;
 use App\Http\Controllers\Api\V1\AuthController as V1AuthController;
 use App\Http\Controllers\Api\V1\ImageController as V1ImageController;
 use Illuminate\Support\Facades\Route;
-
-Route::post('/auth/register', [AuthController::class, 'register']);
-Route::post('/auth/login', [AuthController::class, 'login']);
-
-Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/auth/me', [AuthController::class, 'me']);
-    Route::post('/auth/logout', [AuthController::class, 'logout']);
-
-    Route::get('/bookmarks', [BookmarkController::class, 'index']);
-    Route::post('/bookmarks', [BookmarkController::class, 'store']);
-    Route::delete('/bookmarks/{slug}', [BookmarkController::class, 'destroy']);
-
-    Route::get('/history', [HistoryController::class, 'index']);
-    Route::post('/history', [HistoryController::class, 'store']);
-});
 
 Route::prefix('v1')->group(function () {
     Route::get('/series', [V1SeriesController::class, 'index']);

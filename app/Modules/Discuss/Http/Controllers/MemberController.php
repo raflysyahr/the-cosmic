@@ -47,7 +47,7 @@ class MemberController
 
         $member = Member::findOrFail($memberId);
 
-        $this->memberService->mute($member, $request->input('minutes'));
+        $this->memberService->mute($member, $request->input('minutes'), $request->user()->id);
 
         return response()->json(['message' => 'Member muted.']);
     }
@@ -56,7 +56,7 @@ class MemberController
     {
         $member = Member::findOrFail($memberId);
 
-        $this->memberService->ban($member);
+        $this->memberService->ban($member, request()->user()->id);
 
         return response()->json(['message' => 'Member banned.']);
     }

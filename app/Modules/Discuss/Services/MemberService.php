@@ -2,6 +2,7 @@
 
 namespace App\Modules\Discuss\Services;
 
+use App\Modules\Discuss\Enums\MemberRole;
 use App\Modules\Discuss\Enums\RoomType;
 use App\Modules\Discuss\Events\MemberBanned;
 use App\Modules\Discuss\Events\MemberJoined;
@@ -66,24 +67,63 @@ class MemberService
 
     public function kick(Member $member, string $byUserId): void
     {
+        $this->assertCanModerate($member, $byUserId);
+
         $member->delete();
     }
 
-    public function mute(Member $member, int $minutes): void
+    public function mute(Member $member, int $minutes, string $byUserId): void
     {
+        $this->assertCanModerate($member, $byUserId);
+
         $member->update([
             'muted_until' => now()->addMinutes($minutes),
         ]);
     }
 
-    public function ban(Member $member): void
+    public function ban(Member $member, string $byUserId): void
     {
+        $this->assertCanModerate($member, $byUserId);
+
         $member->update([
             'is_banned' => true,
             'muted_until' => null,
         ]);
 
         event(new MemberBanned($member));
+    }
+
+    /**
+     * Ensure $byUserId is allowed to moderate (kick/mute/ban) $target.
+     *
+     * Rules:
+     * - The actor must be a moderator or admin in the same room.
+     * - Nobody can moderate themselves.
+     * - A moderator cannot moderate another moderator or an admin (admin-only).
+     */
+    public function assertCanModerate(Member $target, string $byUserId): void
+    {
+        if ((string) $target->user_id === (string) $byUserId) {
+            throw ValidationException::withMessages([
+                'member' => ['You cannot perform this action on yourself.'],
+            ]);
+        }
+
+        $actor = Member::where('room_id', $target->room_id)
+            ->where('user_id', $byUserId)
+            ->first();
+
+        if (! $actor || $actor->is_banned || ! in_array($actor->role, [MemberRole::Moderator, MemberRole::Admin], true)) {
+            throw ValidationException::withMessages([
+                'member' => ['You do not have permission to moderate this room.'],
+            ]);
+        }
+
+        if ($actor->role === MemberRole::Moderator && in_array($target->role, [MemberRole::Moderator, MemberRole::Admin], true)) {
+            throw ValidationException::withMessages([
+                'member' => ['Moderators cannot moderate other moderators or admins.'],
+            ]);
+        }
     }
 
     public function listForRoom(string $roomId): Collection

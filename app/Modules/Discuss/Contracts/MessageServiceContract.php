@@ -9,7 +9,7 @@ interface MessageServiceContract
 {
     public function send(SendMessageData $data): Message;
 
-    public function edit(Message $message, string $newBody): Message;
+    public function edit(Message $message, string $newBody, string $byUserId): Message;
 
     public function delete(Message $message, string $byUserId): void;
 }
